@@ -14,20 +14,20 @@ router.post('/approveUser', async (req: Request, res: Response): Promise<void> =
       return;
     }
 
-    // Approve the user and remove them from the waitlist
+    // Approve the user
     user.position = null;
     user.isApproved = true;
 
-    // Grant Pro Access if eligible
+    // Check Pro Access eligibility based on the signup date
     const currentDate = new Date();
     const cutoffDate = new Date('2024-12-31T23:59:59');
-    if (user.position && user.position <= 5000 && currentDate <= cutoffDate) {
+    if (user.createdAt && user.createdAt <= cutoffDate) {
       user.hasProAccess = true;
     }
 
     await user.save();
 
-    // Recalculate positions for remaining users on the waitlist
+    // Recalculate positions for remaining waitlist users
     const users = await User.find({ position: { $ne: null } }).sort('position');
     for (const [index, user] of users.entries()) {
       user.position = index + 1;
