@@ -59,7 +59,7 @@ app.use('/api', approveUserRoute);
 app.use(express.static(path.join(__dirname, '../frontend/out')));
 
 // Catch-All Route to Serve the Frontend `index.html`
-app.get('*', (req, res) => {
+app.get('*', (req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, '../frontend/out/index.html'));
 });
 
@@ -68,7 +68,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.error(`[${new Date().toISOString()}] Global error handler:`, err.stack);
   res.status(err.status || 500).json({
     message: err.message || 'Internal Server Error',
-    ...(process.env.NODE_ENV === 'development' && { stack: err.stack }), // Include stack trace in development mode
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
   });
 });
 
