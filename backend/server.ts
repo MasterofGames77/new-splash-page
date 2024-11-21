@@ -6,7 +6,6 @@ import path from 'path';
 
 // Import Routes
 import authRoutes from './routes/auth';
-//import waitlistRoutes from './routes/waitlist';
 import getWaitlistPositionRoute from './routes/getWaitlistPosition';
 import approveUserRoute from './routes/approveUser';
 
@@ -19,8 +18,8 @@ const port = process.env.PORT || 5000;
 const corsOptions = {
   origin: (origin: string | undefined, callback: Function) => {
     const whitelist = [
-      'http://localhost:3000',
-      // 'https://your-production-frontend-url.herokuapp.com',
+      'http://localhost:3000', // For local development
+      'https://unified-vgw-splash-page-ce047efdcf15.herokuapp.com' // Production link
     ];
     if (!origin || whitelist.includes(origin)) {
       console.log(`CORS request from origin: ${origin}`);
@@ -33,6 +32,7 @@ const corsOptions = {
   credentials: true,
 };
 app.use(cors(corsOptions));
+
 app.use(express.json());
 
 // MongoDB Connection to Splash Page MongoDB
@@ -52,7 +52,6 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 // API Routes
 app.use('/api/auth', authRoutes);
-//app.use('/api', waitlistRoutes);
 app.use('/api', getWaitlistPositionRoute);
 app.use('/api', approveUserRoute);
 

@@ -5,7 +5,7 @@ const nextConfig = {
       remotePatterns: [
         {
           protocol: 'https',
-          hostname: 'your-new-heroku-app.herokuapp.com', // Replace with your Heroku app hostname
+          hostname: 'unified-vgw-splash-page-ce047efdcf15.herokuapp.com/',
           pathname: '/**',
         },
       ],
