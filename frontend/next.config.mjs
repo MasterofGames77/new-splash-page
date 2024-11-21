@@ -11,7 +11,6 @@ const nextConfig = {
       ],
     },
     output: 'export', // For static file output
-    srcDir: 'src', // Specify src as the root directory
   };
   
-export default nextConfig;
+  export default nextConfig;  
