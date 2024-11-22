@@ -24,6 +24,6 @@
   "scripts": {
     "start": "node dist/server.js",
     "dev": "npx ts-node server.ts",
-    "build": "tsc"
+    "build": "npx tsc"
   }
 }
