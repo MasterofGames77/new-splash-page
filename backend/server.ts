@@ -3,9 +3,11 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import path from 'path';
+import fs from 'fs';
 
 // Import Routes
 import authRoutes from './routes/auth';
+import waitlistRoutes from './routes/waitlist';
 import getWaitlistPositionRoute from './routes/getWaitlistPosition';
 import approveUserRoute from './routes/approveUser';
 
@@ -52,15 +54,39 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 // API Routes
 app.use('/api/auth', authRoutes);
+app.use('/api', waitlistRoutes);
 app.use('/api', getWaitlistPositionRoute);
 app.use('/api', approveUserRoute);
 
+// Update these path configurations
+const frontendPath = path.join(__dirname, '../../frontend/out');
+
 // Serve Static Files from the Frontend Build Directory
-app.use(express.static(path.join(__dirname, '../frontend/out')));
+app.use(express.static(frontendPath));
 
 // Catch-All Route to Serve the Frontend `index.html`
-app.get('*', (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, '../frontend/out/index.html'));
+app.get('*', (req: express.Request, res: express.Response): void => {
+  const indexPath = path.join(frontendPath, 'index.html');
+  
+  console.log('Attempting to serve frontend from:', indexPath);
+  
+  try {
+    if (!fs.existsSync(indexPath)) {
+      console.error('index.html not found at:', indexPath);
+      res.status(404).json({ message: 'Frontend build files not found' });
+      return;
+    }
+    
+    res.sendFile(indexPath, (err) => {
+      if (err) {
+        console.error('Error sending file:', err);
+        res.status(500).json({ message: 'Error serving frontend files' });
+      }
+    });
+  } catch (error) {
+    console.error('Error in catch-all route:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 });
 
 // Global Error-Handling Middleware
