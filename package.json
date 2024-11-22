@@ -36,10 +36,13 @@
   },
   "scripts": {
     "start": "node backend/dist/server.js",
+    "dev": "npm-run-all --parallel dev:backend dev:frontend",
     "build": "npm-run-all --parallel install:* && npm-run-all build:*",
     "install:backend": "cd backend && npm install",
     "install:frontend": "cd frontend && npm install",
     "build:backend": "cd backend && npx tsc",
-    "build:frontend": "cd frontend && npm run build"
+    "build:frontend": "cd frontend && npm run build",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev"
   }
 }
