@@ -11,10 +11,7 @@
     },
     "include": [
         "server.ts",
-        "routes/**/*.ts",
-        "models/**/*.ts",
-        "middleware/**/*.ts",
-        "config/**/*.ts"
+        "routes/**/*.ts"
     ],
     "exclude": [
         "node_modules",
