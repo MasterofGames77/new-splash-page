@@ -39,7 +39,7 @@
     "build": "npm-run-all install:* && npm-run-all build:*",
     "install:backend": "cd backend && npm install",
     "install:frontend": "cd frontend && npm install",
-    "build:backend": "cd backend && node compile.js",
+    "build:backend": "cd backend && node heroku-build.js",
     "build:frontend": "cd frontend && npm run build"
   }
 }
