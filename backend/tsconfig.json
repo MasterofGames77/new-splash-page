@@ -9,9 +9,11 @@
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true
     },
-    "include": [
-        "server.ts",
-        "routes/**/*.ts"
+    "files": [
+        "./server.ts",
+        "./routes/auth.ts",
+        "./routes/getWaitlistPosition.ts",
+        "./routes/approveUser.ts"
     ],
     "exclude": [
         "node_modules",
