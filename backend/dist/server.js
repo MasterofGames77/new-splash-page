@@ -8,8 +8,10 @@ const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const path_1 = __importDefault(require("path"));
+const fs_1 = __importDefault(require("fs"));
 // Import Routes
 const auth_1 = __importDefault(require("./routes/auth"));
+const waitlist_1 = __importDefault(require("./routes/waitlist"));
 const getWaitlistPosition_1 = __importDefault(require("./routes/getWaitlistPosition"));
 const approveUser_1 = __importDefault(require("./routes/approveUser"));
 dotenv_1.default.config();
@@ -50,21 +52,39 @@ app.use((req, res, next) => {
 });
 // API Routes
 app.use('/api/auth', auth_1.default);
+app.use('/api', waitlist_1.default);
 app.use('/api', getWaitlistPosition_1.default);
 app.use('/api', approveUser_1.default);
+// Update these path configurations
+const frontendPath = path_1.default.join(__dirname, '../../frontend/out');
 // Serve Static Files from the Frontend Build Directory
-app.use(express_1.default.static(path_1.default.join(__dirname, '../frontend/out')));
+app.use(express_1.default.static(frontendPath));
 // Catch-All Route to Serve the Frontend `index.html`
 app.get('*', (req, res) => {
-    res.sendFile(path_1.default.join(__dirname, '../frontend/out/index.html'));
+    const indexPath = path_1.default.join(frontendPath, 'index.html');
+    console.log('Attempting to serve frontend from:', indexPath);
+    try {
+        if (!fs_1.default.existsSync(indexPath)) {
+            console.error('index.html not found at:', indexPath);
+            res.status(404).json({ message: 'Frontend build files not found' });
+            return;
+        }
+        res.sendFile(indexPath, (err) => {
+            if (err) {
+                console.error('Error sending file:', err);
+                res.status(500).json({ message: 'Error serving frontend files' });
+            }
+        });
+    }
+    catch (error) {
+        console.error('Error in catch-all route:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 });
 // Global Error-Handling Middleware
 app.use((err, req, res, next) => {
     console.error(`[${new Date().toISOString()}] Global error handler:`, err.stack);
-    res.status(err.status || 500).json({
-        message: err.message || 'Internal Server Error',
-        ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
-    });
+    res.status(err.status || 500).json(Object.assign({ message: err.message || 'Internal Server Error' }, (process.env.NODE_ENV === 'development' && { stack: err.stack })));
 });
 // Start the Server
 app.listen(port, () => {
